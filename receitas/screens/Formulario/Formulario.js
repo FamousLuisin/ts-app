@@ -3,23 +3,24 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'reac
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ({ navigation }) {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [ingredients, setIngredients] = useState('');
+  const [titulo, setTitulo] = useState('');
+  const [descricao, setDescricao] = useState('');
+  const [ingredientes, setIngredientes] = useState('');
+  const [preparo, setPreparo] = useState('');
 
   const saveRecipe = async () => {
-    if (!title || !description || !ingredients) {
+    if (!titulo || !descricao || !ingredientes || !preparo) {
       Alert.alert('Erro', 'Todos os campos são obrigatórios!');
       return;
     }
 
-    const newRecipe = { title, description, ingredients };
+    const novaReceita = { titulo, descricao, ingredientes, preparo };
 
     try {
-      const existingRecipes = await AsyncStorage.getItem('@recipes');
-      const recipes = existingRecipes ? JSON.parse(existingRecipes) : [];
-      recipes.push(newRecipe);
-      await AsyncStorage.setItem('@recipes', JSON.stringify(recipes));
+      const receitasExistentes = await AsyncStorage.getItem('@receita');
+      const receita = receitasExistentes ? JSON.parse(receitasExistentes) : [];
+      receita.push(novaReceita);
+      await AsyncStorage.setItem('@receita', JSON.stringify(receita));
       Alert.alert('Sucesso', 'Receita adicionada com sucesso!');
       navigation.goBack();
     } catch (error) {
@@ -32,22 +33,29 @@ export default function ({ navigation }) {
       <TextInput
         style={styles.input}
         placeholder="Título"
-        value={title}
-        onChangeText={setTitle}
+        value={titulo}
+        onChangeText={setTitulo}
       />
 
       <TextInput
         style={styles.input}
         placeholder="Descrição"
-        value={description}
-        onChangeText={setDescription}
+        value={descricao}
+        onChangeText={setDescricao}
       />
 
       <TextInput
         style={styles.input}
         placeholder="Ingredientes (separe por vírgula)"
-        value={ingredients}
-        onChangeText={setIngredients}
+        value={ingredientes}
+        onChangeText={setIngredientes}
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Preparo"
+        value={preparo}
+        onChangeText={setPreparo}
       />
 
       <TouchableOpacity style={styles.button} onPress={saveRecipe}>
